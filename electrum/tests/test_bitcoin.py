@@ -22,9 +22,14 @@ from electrum.keystore import xtype_from_derivation
 
 from electrum import ecc_fast
 
-from . import ElectrumTestCase
-from . import TestCaseForTestnet
-from . import FAST_TESTS
+# from . import ElectrumTestCase
+# from . import TestCaseForTestnet
+# from . import FAST_TESTS
+
+import unittest
+from __init__ import ElectrumTestCase
+from __init__ import TestCaseForTestnet
+from __init__ import FAST_TESTS
 
 
 try:
@@ -801,9 +806,11 @@ class Test_keyImport(ElectrumTestCase):
     )
 
     def test_public_key_from_private_key(self):
-        for priv_details in self.priv_pub_addr:
+        for priv_details in self.priv_pub_addr[:1]:
             txin_type, privkey, compressed = deserialize_privkey(priv_details['priv'])
+            print('privkey', privkey)
             result = ecc.ECPrivkey(privkey).get_public_key_hex(compressed=compressed)
+            print('public', result)
             self.assertEqual(priv_details['pub'], result)
             self.assertEqual(priv_details['txin_type'], txin_type)
             self.assertEqual(priv_details['compressed'], compressed)
@@ -907,3 +914,9 @@ class TestBaseEncode(ElectrumTestCase):
                          data_base58check)
         self.assertEqual(data_bytes,
                          DecodeBase58Check(data_base58check))
+
+
+if __name__ == '__main__':
+    # unittest.main(Test_bitcoin())
+    # unittest.main()
+    Test_keyImport().test_public_key_from_private_key()
